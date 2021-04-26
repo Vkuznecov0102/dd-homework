@@ -8,6 +8,12 @@
     <artifactId>dd-homework-project</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.5</version>
+    </parent>
+
     <properties>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
@@ -18,7 +24,7 @@
         <spring-boot-starter.version>2.4.5</spring-boot-starter.version>
         <spring-boot-starter-jdbc.version>2.4.5</spring-boot-starter-jdbc.version>
         <spring-boot-starter-test.version>2.4.5</spring-boot-starter-test.version>
-        <postgresql.version>42.2.19</postgresql.version>
+        <h2.version>1.4.200</h2.version>
 
     </properties>
 
@@ -50,12 +56,13 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
         </dependency>
+
 
 
     </dependencies>
@@ -75,8 +82,10 @@
     <distributionManagement>
         <snapshotRepository>
             <id>homework</id>
-            <url>https://github.com/Vkuznecov0102/dd-homework/repo</url>
+            <name>GitHub Vkuznecov0102 Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/Vkuznecov0102/dd-homework/tree/main/repo/</url>
         </snapshotRepository>
     </distributionManagement>
+
 
 </project>

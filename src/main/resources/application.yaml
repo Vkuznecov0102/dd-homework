@@ -1,7 +1,3 @@
 spring:
-    datasource:
-      platform: postgres
-      url: jdbc:postgresql://localhost:5432/db_homework
-      username: postgres
-      password: postgres
-      driverClassName: org.postgresql.Driver
+  datasource:
+    url: jdbc:h2:mem:testdb

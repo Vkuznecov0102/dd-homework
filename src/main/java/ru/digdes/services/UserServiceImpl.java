@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.digdes.domains.User;
 import ru.digdes.repository.UserRepository;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -35,5 +37,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(long id) {
         repository.deleteUser(id);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return repository.findAll();
     }
 }

@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Version {
-    long id;
-    long document_id;
+    private Long id;
+    private Long document_id;
 }

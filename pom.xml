@@ -24,6 +24,7 @@
         <spring-boot-starter.version>2.4.5</spring-boot-starter.version>
         <spring-boot-starter-jdbc.version>2.4.5</spring-boot-starter-jdbc.version>
         <spring-boot-starter-test.version>2.4.5</spring-boot-starter-test.version>
+        <spring-boot-starter-web.version>2.4.5</spring-boot-starter-web.version>
         <h2.version>1.4.200</h2.version>
         <liquibase.version>4.3.1</liquibase.version>
 
@@ -69,7 +70,12 @@
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase.version}</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring-boot-starter-web.version}</version>
+        </dependency>
 
 
     </dependencies>

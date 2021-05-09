@@ -2,6 +2,8 @@ package ru.digdes.repository;
 
 import ru.digdes.domains.User;
 
+import java.util.List;
+
 public interface UserRepository {
     User getUserById(long id);
 
@@ -12,4 +14,6 @@ public interface UserRepository {
     void updateUserByLogin(User user);
 
     void deleteUser(long id);
+
+    List<User> findAll();
 }

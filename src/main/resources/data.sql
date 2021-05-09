@@ -11,8 +11,8 @@ insert into version(id,document_id) values(2,2);
 insert into version(id,document_id) values(3,3);
 
 insert into user(id,login,password,document_id) values(1,'ivan','joker1234',1);
-insert into user(id,login,password,document_id) values(2,'andrey','joker1234',3);
-insert into user(id,login,password,document_id) values(3,'ruslan','joker1234',2);
+insert into user(id,login,password,document_id) values(2,'andrey','joker5678',3);
+insert into user(id,login,password,document_id) values(3,'ruslan','batman1234',2);
 
 insert into administrator(id,user_id,moderator_id) values(1,1,null);
 insert into administrator(id,user_id,moderator_id) values(2,2,null);

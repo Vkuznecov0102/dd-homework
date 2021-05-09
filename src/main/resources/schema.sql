@@ -4,32 +4,26 @@ create table user(
 id bigint auto_increment primary key,
 login varchar(255),
 password varchar(255),
-document_id bigint
+catalog_id bigint
 );
 
 create table document(
 id bigint auto_increment primary key,
 name varchar(255),
 priority varchar(255),
-version_id bigint,
-catalog_id bigint
+version_id bigint
 );
 
 create table catalog(
 id bigint auto_increment primary key,
 name varchar(255),
-typeofview varchar(255)
+typeofview varchar(255),
+document_id bigint
 );
 
 create table administrator(
 id bigint auto_increment primary key,
-user_id bigint,
-moderator_id bigint
-);
-
-create table moderator(
-id bigint auto_increment primary key,
-administrator_id bigint
+user_id bigint
 );
 
 create table version(

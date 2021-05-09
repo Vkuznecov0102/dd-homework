@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Administrator {
-    long id;
-    long user_id;
-    long moderator_id;
+    private Long id;
+    private Long user_id;
+    private Long moderator_id;
 }

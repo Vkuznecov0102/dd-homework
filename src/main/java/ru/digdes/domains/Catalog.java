@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Catalog {
-    long id;
-    String name;
-    String typeOfView;
+    private Long id;
+    private String name;
+    private String typeOfView;
 }

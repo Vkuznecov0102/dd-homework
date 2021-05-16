@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import ru.digdes.domains.Administrator;
 import ru.digdes.repository.AdministratorRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class AdministratorServiceImpl implements AdministratorService {
@@ -12,7 +15,12 @@ public class AdministratorServiceImpl implements AdministratorService {
     private final AdministratorRepository repository;
 
     @Override
-    public Administrator getAdministratorById(long id) {
+    public Long countAdministratorById(Long id) {
+        return repository.countAdministratorById(id);
+    }
+
+    @Override
+    public Optional<Administrator> getAdministratorById(long id) {
         return repository.getAdministratorById(id);
     }
 
@@ -29,5 +37,10 @@ public class AdministratorServiceImpl implements AdministratorService {
     @Override
     public void deleteAdministrator(long id) {
         repository.deleteAdministrator(id);
+    }
+
+    @Override
+    public List<Administrator> findAll() {
+        return repository.findAll();
     }
 }

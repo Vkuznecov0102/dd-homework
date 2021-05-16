@@ -1,56 +1,55 @@
 package ru.digdes.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.digdes.domains.Administrator;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
 public class AdministratorRepositoryImpl implements AdministratorRepository {
 
-    private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    @PersistenceContext
+    private final EntityManager entityManager;
+
+    @Override
+    public Long countAdministratorById(Long id) {
+        return (Long) entityManager.createQuery("select count(*) from Administrator a where user_id='" + id + "'").getSingleResult();
+    }
 
 
     @Override
-    public Administrator getAdministratorById(long id) {
-        String getByIdQuery= "select id, user_id,moderator_id where id= :id";
-        return namedParameterJdbcOperations.queryForObject(getByIdQuery, Map.of("id",id), new AdministratorMapper());
+    public Optional<Administrator> getAdministratorById(long id) {
+        return Optional.ofNullable(entityManager.find(Administrator.class, id));
     }
 
     @Override
     public void insertAdministrator(Administrator administrator) {
-        String insertQuery="insert into administrator(user_id,moderator_id) values(?,?)";
-        namedParameterJdbcOperations.getJdbcOperations().update(insertQuery,administrator.getUser_id(),administrator.getModerator_id());
+        if (administrator.getId() == 0L) {
+            entityManager.persist(administrator);
+        }
+        entityManager.merge(administrator);
     }
 
     @Override
     public void updateAdministrator(Administrator administrator) {
-        String updateQuery = "update administrator set user_id=:user_id where id=:id";
-        SqlParameterSource params=new MapSqlParameterSource().addValue("user_id",administrator.getUser_id()).addValue("id",administrator.getId());
-        namedParameterJdbcOperations.update(updateQuery,params);
+        entityManager.merge(administrator);
     }
 
     @Override
     public void deleteAdministrator(long id) {
-        String deleteQuery="delete from administrator where id=:id";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("id", id);
-        namedParameterJdbcOperations.update(deleteQuery,namedParameters);
+        Administrator administrator = entityManager.find(Administrator.class, id);
+        entityManager.remove(administrator);
     }
 
-    private static class AdministratorMapper implements RowMapper<Administrator> {
-
-        @Override
-        public Administrator mapRow(ResultSet resultSet, int i) throws SQLException {
-            return new Administrator(resultSet.getLong("id"),resultSet.getLong("user_id"),
-                    resultSet.getLong("moderator_id"));
-        }
+    @Override
+    public List<Administrator> findAll() {
+        Query query = entityManager.createQuery("SELECT a FROM Administrator a");
+        return query.getResultList();
     }
 }

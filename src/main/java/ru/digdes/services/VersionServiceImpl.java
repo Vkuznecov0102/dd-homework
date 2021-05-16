@@ -5,14 +5,22 @@ import org.springframework.stereotype.Service;
 import ru.digdes.domains.Version;
 import ru.digdes.repository.VersionRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
-public class VersionServiceImpl implements VersionService{
+public class VersionServiceImpl implements VersionService {
 
     private final VersionRepository repository;
 
     @Override
-    public Version getVersionById(long id) {
+    public Long countVersionByDocumentId(Long userId) {
+        return repository.countVersionByDocumentId(userId);
+    }
+
+    @Override
+    public Optional<Version> getVersionById(long id) {
         return repository.getVersionById(id);
     }
 
@@ -29,5 +37,10 @@ public class VersionServiceImpl implements VersionService{
     @Override
     public void deleteVersion(long id) {
         repository.deleteVersion(id);
+    }
+
+    @Override
+    public List<Version> findAll() {
+        return repository.findAll();
     }
 }

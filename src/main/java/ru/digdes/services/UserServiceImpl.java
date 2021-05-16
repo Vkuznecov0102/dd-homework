@@ -7,6 +7,7 @@ import ru.digdes.domains.User;
 import ru.digdes.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -15,13 +16,18 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getUserById(long id) {
+    public Long countUserByLogin(String login) {
+        return repository.countUserByLogin(login);
+    }
+
+    @Override
+    public Optional<User> getUserById(long id) {
         return repository.getUserById(id);
     }
 
     @Override
     public void insertUser(User user) {
-        repository.insertUser(user);
+        repository.saveUser(user);
     }
 
     @Override
@@ -42,5 +48,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public Object getUserByLogin(String login) {
+        return repository.getUserByLogin(login);
     }
 }

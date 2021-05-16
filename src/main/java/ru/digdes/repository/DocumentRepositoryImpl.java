@@ -1,58 +1,54 @@
 package ru.digdes.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.digdes.domains.Document;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
-public class DocumentRepositoryImpl implements DocumentRepository{
+public class DocumentRepositoryImpl implements DocumentRepository {
 
-    private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Override
-    public Document getDocumentById(long id) {
-        String getByIdQuery="select id,name,priority,version_id,catalog_id from document where id=:id";
-        return namedParameterJdbcOperations.queryForObject(getByIdQuery, Map.of("id",id), new DocumentMapper());
+    public Long countDocumentByName(String name) {
+        return (Long) entityManager.createQuery("select count(*) from Document d where name='" + name + "'").getSingleResult();
+    }
+
+    @Override
+    public Optional<Document> getDocumentById(long id) {
+        return Optional.ofNullable(entityManager.find(Document.class, id));
     }
 
     @Override
     public void insertDocument(Document document) {
-        String insertQuery="insert into document(name,priority,version_id,catalog_id) values(?,?,?,?)";
-        namedParameterJdbcOperations.getJdbcOperations().update(insertQuery,document.getName(),document.getPriority(),
-                document.getVersion_id(),document.getCatalog_id());
-
+        if (document.getId() == 0L) {
+            entityManager.persist(document);
+        }
+        entityManager.merge(document);
     }
 
     @Override
     public void updateDocument(Document document) {
-        String updateQuery="update document set name=:name where id=:id";
-        SqlParameterSource params= new MapSqlParameterSource().addValue("name",document.getName()).addValue("id",document.getId());
-        namedParameterJdbcOperations.update(updateQuery, params);
+        entityManager.merge(document);
     }
 
     @Override
     public void deleteDocument(long id) {
-        String deleteQuery="delete from document where id=:id";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("id", id);
-        namedParameterJdbcOperations.update(deleteQuery,namedParameters);
+        Document document = entityManager.find(Document.class, id);
+        entityManager.remove(document);
     }
 
-    private static class DocumentMapper implements RowMapper<Document> {
-
-        @Override
-        public Document mapRow(ResultSet resultSet, int i) throws SQLException {
-            return new Document(resultSet.getLong("id"), resultSet.getString("name"),
-                    resultSet.getString("priority"), resultSet.getLong("version_id"),
-                    resultSet.getLong("catalog_id"));
-        }
+    @Override
+    public List<Document> findAll() {
+        Query query = entityManager.createQuery("SELECT d FROM Document d");
+        return query.getResultList();
     }
 }

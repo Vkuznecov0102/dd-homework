@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import ru.digdes.domains.Document;
 import ru.digdes.repository.DocumentRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -12,7 +15,12 @@ public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository repository;
 
     @Override
-    public Document getDocumentById(long id) {
+    public Long countDocumentByName(String name) {
+        return repository.countDocumentByName(name);
+    }
+
+    @Override
+    public Optional<Document> getDocumentById(long id) {
         return repository.getDocumentById(id);
     }
 
@@ -30,4 +38,11 @@ public class DocumentServiceImpl implements DocumentService {
     public void deleteDocument(long id) {
         repository.deleteDocument(id);
     }
+
+    @Override
+    public List<Document> findAll() {
+        return repository.findAll();
+    }
+
+
 }

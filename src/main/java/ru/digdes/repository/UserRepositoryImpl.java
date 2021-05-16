@@ -1,75 +1,64 @@
 package ru.digdes.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.digdes.domains.User;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
-    private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Override
-    public User getUserById(long id) {
-        String getByIdQuery = "select id,login,password,document_id from user where id=:id";
-        return namedParameterJdbcOperations.queryForObject(getByIdQuery, Map.of("id", id), new UserMapper());
+    public Long countUserByLogin(String login) {
+        return (Long) entityManager.createQuery("select count(*) from User u where name='" + login + "'").getSingleResult();
     }
 
     @Override
-    public void insertUser(User user) {
-        String insertQuery = "insert into user(login,password,document_id) values(?,?,?)";
-        namedParameterJdbcOperations.getJdbcOperations().update(insertQuery, user.getLogin(), user.getPassword(), user.getDocument_id());
+    public Optional<User> getUserById(long id) {
+        return Optional.ofNullable(entityManager.find(User.class, id));
+    }
+
+    @Override
+    public void saveUser(User user) {
+        if (user.getId() == 0L) {
+            entityManager.persist(user);
+        }
+        entityManager.merge(user);
     }
 
     @Override
     public void updateUserByPassword(User user) {
-        String updateQuery = "update user set password=:password where id=:id";
-        SqlParameterSource params = new MapSqlParameterSource().addValue("password", user.getPassword()).addValue("id", user.getId());
-        namedParameterJdbcOperations.update(updateQuery, params);
+        entityManager.merge(user);
     }
 
     @Override
     public void updateUserByLogin(User user) {
-        String updateQuery = "update user set login=:login where id=:id";
-        SqlParameterSource params = new MapSqlParameterSource().addValue("password", user.getLogin()).addValue("id", user.getId());
-        namedParameterJdbcOperations.update(updateQuery, params);
+        entityManager.merge(user);
     }
 
     @Override
     public void deleteUser(long id) {
-        String deleteQuery = "delete from user where id=:id";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("id", id);
-        namedParameterJdbcOperations.update(deleteQuery, namedParameters);
+        User user = entityManager.find(User.class, id);
+        entityManager.remove(user);
     }
 
     @Override
     public List<User> findAll() {
-        return namedParameterJdbcOperations.getJdbcOperations().query("select * from user",
-                (rs, rowNum) ->
-                        new User(
-                                rs.getLong("id"),
-                                rs.getString("login"),
-                                rs.getString("password"),
-                                rs.getLong("document_id")
-                        ));
+        Query query = entityManager.createQuery("SELECT u FROM User u");
+        return query.getResultList();
     }
 
-    private static class UserMapper implements RowMapper<User> {
-
-        @Override
-        public User mapRow(ResultSet resultSet, int i) throws SQLException {
-            return new User(resultSet.getLong("id"), resultSet.getString("login"),
-                    resultSet.getString("password"), resultSet.getLong("document_id"));
-        }
+    @Override
+    public Object getUserByLogin(String login) {
+        return entityManager.createQuery("select u from User u where user.login='" + login + "'").getSingleResult();
     }
 }

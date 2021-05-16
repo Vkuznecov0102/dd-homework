@@ -1,55 +1,54 @@
 package ru.digdes.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.digdes.domains.Version;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
 public class VersionRepositoryImpl implements VersionRepository {
 
-    private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Override
-    public Version getVersionById(long id) {
-        String getByIdQuery="select id,document_id from version where id=:id";
-        return namedParameterJdbcOperations.queryForObject(getByIdQuery, Map.of("id",id),new VersionMapper());
+    public Long countVersionByDocumentId(Long userId) {
+        return (Long) entityManager.createQuery("select count(*) from Version v where user_id='" + userId + "'").getSingleResult();
+    }
+
+    @Override
+    public Optional<Version> getVersionById(long id) {
+        return Optional.ofNullable(entityManager.find(Version.class, id));
     }
 
     @Override
     public void insertVersion(Version version) {
-        String insertQuery="insert into version(document_id) values(?)";
-        namedParameterJdbcOperations.getJdbcOperations().update(insertQuery,version.getDocument_id());
+        if (version.getId() == 0L) {
+            entityManager.persist(version);
+        }
+        entityManager.merge(version);
     }
 
     @Override
     public void updateVersion(Version version) {
-        String updateQuery="update version set document_id=:document_id where id=:id";
-        SqlParameterSource params=new MapSqlParameterSource().addValue("document_id",version.getDocument_id()).
-                addValue("id",version.getId());
-        namedParameterJdbcOperations.getJdbcOperations().update(updateQuery,params);
+        entityManager.merge(version);
     }
 
     @Override
     public void deleteVersion(long id) {
-        String deleteQuery="delete from version where id=:id";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("id", id);
-        namedParameterJdbcOperations.update(deleteQuery,namedParameters);
+        Version version = entityManager.find(Version.class, id);
+        entityManager.remove(version);
     }
 
-    private static class VersionMapper implements RowMapper<Version> {
-
-        @Override
-        public Version mapRow(ResultSet resultSet, int i) throws SQLException {
-            return new Version(resultSet.getLong("id"),resultSet.getLong("document_id"));
-        }
+    @Override
+    public List<Version> findAll() {
+        Query query = entityManager.createQuery("SELECT v FROM Version v");
+        return query.getResultList();
     }
 }

@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Список версий</title>
+    <style type="text/css">
+        body {
+		background:  url(resources/svetlye_fony.jpg);
+		color: #000;
+		background-attachment: fixed;
+		background-repeat: repeat-x;
+		background-size: 100%
+}
+        .users td {
+            border: 1px solid #000000;
+            padding: 15px;
+        }
+        div.field {
+  padding-bottom: 5px;
+}
+div.field label {
+  display: block;
+  float: left;
+  width: 70px;
+  height: 15px;
+}
+
+
+
+    </style>
+</head>
+<body>
+<h1>Versions:</h1>
+
+<div class="field">
+    <table class="users">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Document_id</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="version: ${versions}">
+            <td th:text="${version.id}">1</td>
+            <td th:text="${version.document}">1</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

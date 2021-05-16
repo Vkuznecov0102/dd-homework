@@ -23,10 +23,14 @@
         <lombok.version>1.18.20</lombok.version>
         <spring-boot-starter.version>2.4.5</spring-boot-starter.version>
         <spring-boot-starter-jdbc.version>2.4.5</spring-boot-starter-jdbc.version>
+        <spring-boot-starter-data-jpa.version>2.4.5</spring-boot-starter-data-jpa.version>
         <spring-boot-starter-test.version>2.4.5</spring-boot-starter-test.version>
         <spring-boot-starter-web.version>2.4.5</spring-boot-starter-web.version>
+        <spring-boot-starter-thymeleaf.version>2.4.5</spring-boot-starter-thymeleaf.version>
+<!--        <spring-boot-starter-security.version>2.4.5</spring-boot-starter-security.version>-->
         <h2.version>1.4.200</h2.version>
-        <liquibase.version>4.3.1</liquibase.version>
+        <modelmapper.version>2.4.3</modelmapper.version>
+
 
     </properties>
 
@@ -43,6 +47,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring-boot-starter-jdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${spring-boot-starter-data-jpa.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
         <dependency>
@@ -64,18 +73,34 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-core -->
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-boot-starter-web.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>${spring-boot-starter-thymeleaf.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-security</artifactId>-->
+<!--            <version>${spring-boot-starter-security.version}</version>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${modelmapper.version}</version>
+        </dependency>
+
+
+
 
 
     </dependencies>
@@ -88,12 +113,8 @@
                     <version>2.8.2</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.liquibase</groupId>
-                    <artifactId>liquibase-maven-plugin</artifactId>
-                    <version>4.3.4</version>
-                    <configuration>
-                        <propertyFile>src/main/resources/liquibase.properties</propertyFile>
-                    </configuration>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
                 </plugin>
             </plugins>
         </pluginManagement>
